@@ -1,0 +1,1423 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Invitación · estilos de la columna y de cada sección
+   Orden: columna → base de sección → tipografía → botones → encaje →
+          portada → bienvenida/fecha → itinerario → ubicación → dress code →
+          confirmación → deseos → cierre → apertura → música
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Columna: ancho de celular, centrada, sobre fondo sólido ─────────────── */
+.invitation {
+  position: relative;
+  width: 100%;
+  max-width: var(--column-max);
+  min-height: 100svh;
+  margin: 0 auto;
+  overflow-x: clip;
+  background: var(--surface);
+}
+
+/* ── Base de sección ─────────────────────────────────────────────────────── */
+.section {
+  position: relative;
+  padding: var(--section-pad) var(--gutter);
+  text-align: center;
+}
+
+.section__inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Textura de papel sobre los fondos planos (el verde usa su propio damasco). */
+.section--ivory::before,
+.section--mist::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--paper);
+  background-size: 520px 520px;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.section--olive {
+  /* Damasco verde (public/images/fondo.webp); --olive es el color de reserva. */
+  background: var(--olive) url('/images/fondo.webp') center / cover no-repeat;
+  color: var(--ivory);
+}
+
+.section--ivory {
+  background: var(--surface);
+  color: var(--ink);
+}
+.section--ivory::before {
+  opacity: 0.22;
+}
+
+.section--mist {
+  background: var(--mist);
+  color: var(--ink);
+}
+.section--mist::before {
+  opacity: 0.3;
+}
+
+.section--photo {
+  background: #12110c;
+  color: var(--ivory);
+}
+
+/* Dos secciones marfil seguidas se leen como un único bloque. */
+.section--ivory:has(+ .section--ivory) {
+  padding-bottom: 52px;
+}
+.section--ivory + .section--ivory {
+  padding-top: 0;
+}
+
+/* ── Animaciones ─────────────────────────────────────────────────────────
+   Solo con JS y sin "reducir movimiento" (clase js-reveal). Cada hijo directo de
+   una sección aparece al entrar en pantalla (ver Section en ui.jsx). */
+.js-reveal .section__inner > * {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1s var(--ease) var(--reveal-delay, 0s), transform 1s var(--ease) var(--reveal-delay, 0s);
+}
+.js-reveal .section__inner > .is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.7); }
+  to { opacity: 1; transform: none; }
+}
+/* El nombre se "escribe" de izquierda a derecha. */
+/* Los márgenes van en px y son amplios: los adornos de la caligráfica sobresalen de la caja del texto. */
+@keyframes write {
+  from { clip-path: inset(-140px calc(100% + 40px) -140px -140px); }
+  to { clip-path: inset(-140px -140px -140px -140px); }
+}
+@keyframes card-in {
+  from { opacity: 0; transform: scale(0.82) translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes kenburns {
+  from { transform: scale(1.16); }
+  to { transform: scale(1); }
+}
+@keyframes draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* ── Tipografía ──────────────────────────────────────────────────────────── */
+.title {
+  font-weight: 500;
+  line-height: 1.22;
+  color: var(--olive-deep);
+  text-wrap: balance;
+}
+.section--olive .title,
+.section--photo .title {
+  color: var(--ivory);
+}
+
+.title__cap {
+  font-family: var(--font-script);
+  font-weight: 400;
+  font-size: 78px;
+  line-height: 0;
+  margin-right: -3px;
+  vertical-align: -0.04em;
+}
+
+.title__rest {
+  font-size: 27px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.lead {
+  max-width: 310px;
+  margin: 22px auto 0;
+  font-size: 19px;
+  line-height: 1.32;
+  text-wrap: balance;
+}
+
+.eyebrow {
+  font-size: 22px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--olive-deep);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.textlink {
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-underline-offset: 4px;
+  opacity: 0.8;
+}
+.textlink:hover {
+  opacity: 1;
+}
+
+/* ── Botones: rectángulos planos, sin radio ni sombra ────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 30px;
+  border: 1px solid transparent;
+  font-family: var(--font-serif);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+.btn--light {
+  background: var(--surface);
+  color: var(--olive-deep);
+  border-color: var(--surface);
+}
+.btn--light:hover {
+  background: transparent;
+  color: var(--ivory);
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--ivory);
+  border-color: rgb(250 247 238 / 0.7);
+}
+.btn--ghost:hover {
+  background: var(--surface);
+  color: var(--olive-deep);
+}
+.btn--olive {
+  background: var(--olive);
+  color: var(--ivory);
+  border-color: var(--olive);
+}
+.btn--olive:hover {
+  background: transparent;
+  color: var(--olive);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Encaje: imagen propia (public/images/encaje.webp), cubre el ancho ───── */
+.lace {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  height: var(--lace-h);
+  background: url('/images/encaje.webp') center bottom / cover no-repeat;
+  pointer-events: none;
+}
+.lace--top {
+  top: calc(var(--lace-h) * -1 + 2px);
+}
+.lace--bottom {
+  bottom: calc(var(--lace-h) * -1 + 2px);
+  transform: scaleY(-1);
+}
+
+/* ═══ Portada ═══════════════════════════════════════════════════════════════ */
+.hero {
+  padding: 0;
+  overflow: visible;
+}
+.hero .section__inner {
+  /* Alto de la pantalla de un celular (acotado en escritorio). El encaje de abajo
+     ocupa --lace-h, así que el marco se centra en el espacio restante. */
+  height: clamp(640px, 100svh, 932px);
+  padding: 28px 14px calc(var(--lace-h) + 8px);
+}
+.hero__stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.frame__thick,
+.frame__thin {
+  fill: var(--ivory);
+  fill-opacity: 0.68;
+}
+
+.hero__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero__names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-names);
+  font-weight: 400;
+  font-size: 86px;
+  line-height: 1;
+  text-align: center;
+}
+.hero__name {
+  display: block;
+}
+.hero__name--amp {
+  /* El & es más grande que los nombres y se acerca a "Sarahi" con interlineado y margen negativos. */
+  font-size: 130px;
+  line-height: 0.5;
+  margin-top: -20px;
+  margin-bottom: 50px;
+}
+
+.hero__block {
+  position: relative;
+}
+.hero__doves {
+  /* Los nombres quedan en el centro exacto del marco; las palomas flotan encima. */
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  color: var(--ivory);
+}
+.hero__doves svg {
+  width: 140px;
+  height: auto;
+}
+
+/* ═══ Bienvenida y fecha ════════════════════════════════════════════════════ */
+.date__title {
+  font-family: 'Great Vibes', var(--font-script);
+  font-size: 52px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--olive-deep);
+}
+.date__month {
+  margin-top: 46px;
+  font-size: 19px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  color: var(--olive-deep);
+}
+/* Semana de la boda: días de la semana, números en caligráfica y el día señalado con un óvalo. */
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+  max-width: 270px;
+  margin: 22px auto 0;
+}
+.week__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.week__label {
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  color: var(--olive-deep);
+}
+.week__day {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 40px;
+  font-size: 22px;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+  color: var(--olive);
+}
+.week__col.is-event .week__day {
+  color: var(--olive-deep);
+}
+.week__scribble {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 32px;
+  margin: -16px 0 0 -22px;
+  color: var(--olive-deep);
+}
+
+
+/* ═══ Itinerario ════════════════════════════════════════════════════════════ */
+/* Sección verde con una cápsula clara (redondeada arriba y abajo): las actividades aparecen al hacer scroll. */
+.section.itinerary {
+  padding: 52px 16px 56px;
+  /* Verde claro con relieve (public/images/fondo-claro.webp); --mist es el color de reserva. */
+  background: var(--mist) url('/images/fondo-claro.webp') center / cover no-repeat;
+}
+.section.itinerary::before {
+  display: none;
+}
+.arch {
+  position: relative;
+  padding: 78px 20px 96px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.arch::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: var(--paper);
+  background-size: 520px 520px;
+  mix-blend-mode: overlay;
+  opacity: 0.22;
+  pointer-events: none;
+}
+.arch__title {
+  position: relative;
+  font-family: 'Great Vibes', var(--font-script);
+  font-size: 56px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--olive-deep);
+}
+.steps {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 38px;
+}
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* Línea corta entre una actividad y la siguiente (aparece junto con la que le sigue). */
+.step + .step::before {
+  content: '';
+  width: 1px;
+  height: 34px;
+  margin: 26px 0 24px;
+  background: var(--olive-deep);
+  opacity: 0.7;
+}
+.step__title {
+  font-family: 'Great Vibes', var(--font-script);
+  font-size: 40px;
+  line-height: 1.1;
+  color: var(--olive-deep);
+}
+.step__time {
+  margin-top: 4px;
+  font-size: 21px;
+  letter-spacing: 0.12em;
+  padding-left: 0.12em;
+  color: var(--olive-deep);
+}
+.js-reveal .step {
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+  transition: opacity 1s var(--ease) var(--reveal-delay, 0s), transform 1s var(--ease) var(--reveal-delay, 0s);
+}
+.js-reveal .step.is-visible {
+  opacity: 1;
+  transform: none;
+}
+/* ═══ Foto previa a las ubicaciones ═════════════════════════════════════════ */
+.section.banner {
+  padding: 0;
+}
+.banner__figure {
+  margin: 0;
+  overflow: hidden;
+}
+.banner__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.js-reveal .banner__figure.is-visible img {
+  animation: kenburns 12s ease-out both;
+}
+
+/* ═══ Ubicación ═════════════════════════════════════════════════════════════ */
+/* Un panel por lugar: foto a todo el ancho y una nube clara con el texto. */
+.section.places {
+  padding: 0;
+}
+.places .section__inner {
+  display: flex;
+  flex-direction: column;
+}
+.place {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 600px;
+  padding: 56px 12px;
+  overflow: hidden;
+  background: #12110c;
+}
+.place__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.place__shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 18, 12, 0.22);
+}
+.place__card {
+  position: relative;
+  width: min(320px, 100%);
+  aspect-ratio: 4649 / 4891; /* la proporción del dibujo de la nube: no se deforma */
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+}
+.place__cloud {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--surface);
+  filter: drop-shadow(0 6px 18px rgb(0 0 0 / 0.28));
+}
+.place__body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 230px;
+  padding: 46px 0 44px;
+}
+.place__label {
+  font-size: 18px;
+  letter-spacing: 0.28em;
+  padding-left: 0.28em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.place__name {
+  margin-top: 10px;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  line-height: 1.15;
+  text-transform: uppercase;
+  color: var(--olive-deep);
+}
+.place__time {
+  margin: 18px 0 26px;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--olive-deep);
+}
+
+/* ═══ Dress code ════════════════════════════════════════════════════════════ */
+.swatches {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+.swatch {
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(55, 55, 45, 0.2);
+}
+
+/* ═══ Confirmación ══════════════════════════════════════════════════════════ */
+.section--olive .btn {
+  margin-top: 28px;
+}
+/* ═══ Deseos ════════════════════════════════════════════════════════════════ */
+/* Sobre inclinado detrás de la carta (papel verde), que va al frente un poco a la derecha. */
+.gifts__stage {
+  position: relative;
+  margin-top: 56px;
+}
+.gifts__envelope {
+  position: absolute;
+  z-index: 0;
+  left: -5%;
+  top: -34px;
+  width: 64%;
+  height: auto;
+  transform: rotate(-8deg);
+}
+.gifts__card {
+  position: relative;
+  z-index: 1;
+  margin: 0 8% 0 11%;
+  padding: 38px 26px 40px;
+  background: var(--olive-deep) url('/images/papel.webp') center / cover no-repeat;
+  color: var(--ivory);
+  font-size: 18px;
+  line-height: 1.32;
+  text-wrap: balance;
+}
+.gifts__title {
+  font-family: 'Great Vibes', var(--font-script);
+  font-size: 50px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--olive-deep);
+}
+.gifts__message,
+.gifts__small {
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  line-height: 1.55;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.gifts__block {
+  margin-top: 26px;
+}
+.gifts__name {
+  font-size: 29px;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.gifts__block .gifts__small {
+  margin-top: 10px;
+}
+.gifts__block .btn {
+  margin-top: 16px;
+  min-height: 42px;
+}
+/* Al aparecer, el sobre se inclina hasta su lugar. */
+.js-reveal .gifts__envelope {
+  transform: translateY(24px) rotate(0deg);
+  transition: transform 1.3s var(--ease) 0.3s;
+}
+.js-reveal .gifts__stage.is-visible .gifts__envelope {
+  transform: rotate(-8deg);
+}
+
+/* Confirmación: sección más alta para dar aire al botón. */
+.section.rsvp {
+  padding-top: 150px;
+  padding-bottom: 150px;
+}
+
+/* ═══ Cierre ════════════════════════════════════════════════════════════════ */
+.closing {
+  padding-top: 100px;
+  padding-bottom: 96px;
+}
+.countdown {
+  margin-top: 40px;
+}
+.countdown__label {
+  font-family: 'Great Vibes', var(--font-script);
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.countdown__list {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+.countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  background: rgba(250, 247, 238, 0.14);
+}
+.countdown__value {
+  font-size: 26px;
+  line-height: 1;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.countdown__name {
+  margin-top: 3px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.countdown__done {
+  margin-top: 40px;
+  font-family: 'Great Vibes', var(--font-script);
+  font-size: 34px;
+}
+
+.closing__names {
+  margin-top: 44px;
+  font-family: var(--font-names);
+  font-size: 46px;
+  line-height: 1.1;
+  text-transform: none;
+  letter-spacing: 0;
+}
+/* Crédito al final de la invitación. */
+.credit {
+  padding: 22px var(--gutter) 26px;
+  background: var(--outer);
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  padding-left: calc(var(--gutter) + 0.32em);
+  text-transform: uppercase;
+  color: rgb(250 247 238 / 0.7);
+}
+
+/* ═══ Apertura: sobre animado sobre fondo verde sólido ═══════════════════════ */
+.opening {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  background: var(--olive);
+  transition: opacity 0.9s var(--ease) 0.6s;
+}
+.opening.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+/* Frase arriba del sobre, en caligráfica. */
+.env__title {
+  position: absolute;
+  top: 17vh;
+  left: 0;
+  right: 0;
+  padding: 0 var(--gutter);
+  text-align: center;
+  text-wrap: balance;
+  font-family: 'Great Vibes', var(--font-script);
+  font-size: clamp(34px, 9.5vw, 46px);
+  line-height: 1.15;
+  color: var(--ivory);
+  transition: opacity 0.6s var(--ease);
+}
+.opening.is-opening .env__title,
+.opening.is-leaving .env__title {
+  opacity: 0;
+}
+.env {
+  --w: min(86vw, 380px);
+  --h: calc(var(--w) * 0.74);
+  --flap-h: calc(var(--h) * 0.8);
+  --lace-e: calc(var(--w) * 0.085);
+  --cream: #DCD8C9;
+  --shade: #CFCAB9;
+  --deep: #BDB7A3;
+  position: relative;
+  width: var(--w);
+  height: var(--h);
+  margin-top: 8vh;
+  perspective: 1400px;
+}
+/* Textura de papel sobre las piezas del sobre. */
+.env__back,
+.env__pocket {
+  background-image: var(--paper);
+  background-size: 520px 520px;
+  background-blend-mode: soft-light;
+}
+.env__part {
+  position: absolute;
+  inset: 0;
+  transition: transform 1s var(--ease) 0.15s, opacity 0.7s var(--ease) 0.5s;
+}
+.env__back {
+  z-index: 1;
+  background-color: var(--deep);
+  box-shadow: 0 24px 48px rgb(0 0 0 / 0.4);
+}
+/* Carta: queda oculta tras el bolsillo y la solapa; al abrir sube. */
+.env__letter {
+  position: absolute;
+  z-index: 2;
+  left: 7%;
+  right: 7%;
+  top: 8%;
+  bottom: 8%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--surface) url('/images/papel.webp') center / cover no-repeat;
+  color: var(--ivory);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.25);
+  outline: 1px solid rgb(250 247 238 / 0.35);
+  outline-offset: -8px;
+  transition: transform 1.1s var(--ease) 0.55s, opacity 0.8s var(--ease) 0.4s;
+}
+.env__letter-tag {
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+}
+.env__letter-names {
+  font-family: var(--font-names);
+  font-size: 38px;
+  line-height: 1.1;
+}
+.env__pocket {
+  z-index: 4;
+}
+.env__pocket--left {
+  background-color: var(--shade);
+  clip-path: polygon(0 0, 50% 58%, 0 100%);
+}
+.env__pocket--right {
+  background-color: var(--shade);
+  clip-path: polygon(100% 0, 50% 58%, 100% 100%);
+}
+.env__pocket--bottom {
+  background-color: var(--cream);
+  background-image: var(--paper), linear-gradient(0deg, rgb(255 255 255 / 0.35), transparent 60%);
+  clip-path: polygon(0 100%, 50% 50%, 100% 100%);
+}
+/* Solapa de punta redondeada con encaje en sus dos bordes (gira junto con ella). */
+.env__flapwrap {
+  position: absolute;
+  z-index: 6;
+  inset: 0 0 auto 0;
+  height: var(--flap-h);
+  overflow: hidden; /* el encaje no sobresale de las esquinas del sobre */
+  transform-origin: top center;
+  transition: transform 0.9s var(--ease), z-index 0s linear 0.3s;
+}
+.env__flap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--cream);
+  stroke: rgb(0 0 0 / 0.07);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.22));
+}
+.env__lace {
+  /* Largo y ángulo del borde inclinado de la solapa (alto 0.592·ancho, mitad del ancho 0.5·ancho). */
+  --ang: 49.8deg;
+  position: absolute;
+  top: 0;
+  width: calc(var(--w) * 0.7);
+  height: var(--lace-e);
+  background: url('/images/encaje.webp') center bottom / 100% 100% no-repeat;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.2));
+  pointer-events: none;
+}
+.env__lace--left {
+  left: 0;
+  transform-origin: top left;
+  transform: rotate(var(--ang)) scaleY(-1);
+}
+.env__lace--right {
+  right: 0;
+  transform-origin: top right;
+  transform: rotate(calc(var(--ang) * -1)) scaleY(-1);
+}
+.env__seal,
+.env__flowers {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+}
+/* Sello de cera sobre la punta de la solapa. */
+.env__seal {
+  z-index: 7;
+  left: 50%;
+  top: calc(var(--flap-h) * 0.93);
+  width: calc(var(--w) * 0.24);
+  height: auto;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.35));
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+}
+/* Flores por el borde derecho del sobre: la flor asoma arriba y los tallos salen por abajo. */
+.env__flowers {
+  z-index: 8;
+  right: -2%;
+  bottom: -11%;
+  height: calc(var(--h) * 0.95);
+  width: auto;
+  filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.28));
+  transition: transform 1s var(--ease) 0.15s, opacity 0.7s var(--ease) 0.5s;
+}
+.env__hit {
+  position: absolute;
+  z-index: 9;
+  inset: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.env__hit:focus-visible {
+  outline: 2px solid var(--ivory);
+  outline-offset: 6px;
+}
+.env__hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 34px);
+  text-align: center;
+  font-size: 15px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ivory);
+  transition: opacity 0.35s var(--ease);
+}
+
+/* 1) La solapa gira y la carta sube. */
+.opening.is-opening .env__flapwrap,
+.opening.is-leaving .env__flapwrap {
+  transform: rotateX(180deg);
+  z-index: 1;
+}
+.opening.is-opening .env__hit,
+.opening.is-leaving .env__hit {
+  pointer-events: none;
+}
+.opening.is-opening .env__seal,
+.opening.is-leaving .env__seal {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.8);
+}
+.opening.is-opening .env__hint,
+.opening.is-leaving .env__hint {
+  opacity: 0;
+}
+.opening.is-opening .env__letter,
+.opening.is-leaving .env__letter {
+  transform: translateY(-48%);
+}
+/* 2) El sobre baja y se desvanece; la carta se desvanece y aparece la invitación. */
+.opening.is-leaving .env__part {
+  transform: translateY(220px);
+  opacity: 0;
+}
+.opening.is-leaving .env__flowers {
+  transform: translateY(220px);
+  opacity: 0;
+}
+.opening.is-leaving .env__flapwrap {
+  transform: rotateX(180deg) translateY(-220px);
+  opacity: 0;
+  transition: transform 1s var(--ease) 0.15s, opacity 0.7s var(--ease) 0.5s;
+}
+.opening.is-leaving .env__letter {
+  transform: translateY(-48%) scale(1.12);
+  opacity: 0;
+}
+
+/* ═══ Galería ═══════════════════════════════════════════════════════════════ */
+.gallery {
+  /* Mosaico de dos columnas con la proporción original de cada foto (sin recortar caras). */
+  columns: 2;
+  column-gap: 10px;
+  margin-top: 30px;
+}
+.gallery__item {
+  break-inside: avoid;
+  margin-bottom: 10px;
+}
+.gallery__btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  overflow: hidden;
+}
+.gallery__btn img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.6s var(--ease);
+}
+.gallery__btn:hover img {
+  transform: scale(1.04);
+}
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 56px 16px;
+  background: rgb(18 20 13 / 0.94);
+  animation: fade 0.3s var(--ease) both;
+}
+.lightbox__img {
+  max-width: min(100%, 560px);
+  max-height: 100%;
+  object-fit: contain;
+}
+.lightbox__close,
+.lightbox__nav {
+  position: absolute;
+  border: 0;
+  background: none;
+  color: var(--ivory);
+  font-size: 44px;
+  line-height: 1;
+  cursor: pointer;
+}
+.lightbox__close {
+  top: 14px;
+  right: 18px;
+}
+.lightbox__nav {
+  top: 50%;
+  margin-top: -24px;
+  padding: 8px 14px;
+}
+.lightbox__nav--prev {
+  left: 4px;
+}
+.lightbox__nav--next {
+  right: 4px;
+}
+
+/* ═══ Animaciones por sección ═══════════════════════════════════════════════ */
+/* Portada: marco, golondrinas y los tres nombres juntos (se "escriben" a la vez). */
+.js-reveal .hero__stage {
+  transition-duration: 0.5s;
+}
+.js-reveal .hero__stage.is-visible .frame {
+  animation: fade 0.8s var(--ease) both;
+}
+.js-reveal .hero__stage.is-visible .hero__doves {
+  animation: fade-up 0.7s var(--ease) 0.15s both;
+}
+.js-reveal .hero__stage.is-visible .hero__name {
+  animation: write 1.1s ease-out 0.25s both;
+}
+/* Fecha: el calendario entra completo de una vez y después se dibuja el óvalo. */
+.js-reveal .week__scribble path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.js-reveal .week.is-visible .week__scribble path {
+  animation: draw 1s ease-in-out 1.1s both;
+}
+/* Ubicación: la foto se acomoda lentamente y la nube entra con un pequeño rebote. */
+.js-reveal .place__card {
+  opacity: 0;
+}
+.js-reveal .place.is-visible .place__card {
+  animation: card-in 1.1s var(--ease) 0.3s both;
+}
+.js-reveal .place.is-visible .place__photo {
+  animation: kenburns 14s ease-out both;
+}
+
+/* ═══ Música (opcional) ═════════════════════════════════════════════════════ */
+.music {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: flex-end;
+  height: 0;
+  padding-right: 12px;
+}
+.music__btn {
+  align-self: flex-start;
+  min-height: 40px;
+  margin-top: 12px;
+  padding: 0 14px;
+  border: 1px solid var(--olive);
+  background: var(--surface);
+  color: var(--olive);
+  font-family: var(--font-serif);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Escritorio · ancho completo
+   Por debajo de 900px (celulares y tabletas en vertical) se conserva la columna
+   de celular de arriba, sin cambios. Desde 900px los fondos de cada sección
+   ocupan todo el ancho de la ventana y el contenido se acomoda en horizontal.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 900px) {
+  :root {
+    --section-pad: 120px;
+    --gutter: 64px;
+    --lace-h: 80px;
+    --content-max: 1040px;
+  }
+
+  /* ── Columna → ancho completo ──────────────────────────────────────────── */
+  .invitation {
+    max-width: none;
+  }
+  .section__inner {
+    max-width: var(--content-max);
+    margin-inline: auto;
+  }
+  .section--ivory:has(+ .section--ivory) {
+    padding-bottom: 72px;
+  }
+
+  /* El encaje se repite a lo ancho (la imagen va espejada para que no se note la unión). */
+  .lace {
+    background: url('/images/encaje-ancho.webp') center bottom / auto 100% repeat-x;
+  }
+
+  /* ── Tipografía ─────────────────────────────────────────────────────────── */
+  .title__cap {
+    font-size: 100px;
+    margin-right: -4px;
+  }
+  .title__rest {
+    font-size: 36px;
+  }
+  .lead {
+    max-width: 580px;
+    margin-top: 30px;
+    font-size: 24px;
+  }
+  .btn {
+    min-height: 54px;
+    padding: 0 40px;
+    font-size: 15px;
+  }
+
+  /* ── Portada: el marco conserva su proporción y se centra sobre el damasco ─ */
+  .hero .section__inner {
+    max-width: none;
+    height: clamp(680px, 100svh, 1100px);
+    padding: 40px 24px calc(var(--lace-h) + 16px);
+  }
+  .hero__stage {
+    width: auto;
+    aspect-ratio: 532 / 824; /* la del dibujo del marco */
+    margin-inline: auto;
+    container-type: inline-size;
+  }
+  /* Todo se mide contra el ancho del marco (cqw), igual que en el celular. */
+  .hero__names {
+    font-size: 21.4cqw;
+  }
+  .hero__name--amp {
+    font-size: 32.3cqw;
+    margin-top: -5cqw;
+    margin-bottom: 12.4cqw;
+  }
+  .hero__doves {
+    margin-bottom: 3.7cqw;
+  }
+  .hero__doves svg {
+    width: 34.8cqw;
+  }
+
+  /* ── Fecha ──────────────────────────────────────────────────────────────── */
+  .date__title {
+    font-size: 72px;
+  }
+  .date__month {
+    margin-top: 56px;
+    font-size: 23px;
+  }
+  .week {
+    max-width: 440px;
+    margin-top: 28px;
+  }
+  .week__col {
+    gap: 18px;
+  }
+  .week__label {
+    font-size: 18px;
+  }
+  .week__day {
+    height: 52px;
+    font-size: 28px;
+  }
+  .week__scribble {
+    width: 58px;
+    height: 42px;
+    margin: -21px 0 0 -29px;
+  }
+
+  /* ── Itinerario: cápsula ancha con las actividades en fila ──────────────── */
+  .section.itinerary {
+    padding: 100px 56px 108px;
+  }
+  .section.itinerary .section__inner {
+    max-width: none;
+  }
+  .arch {
+    max-width: 1240px;
+    margin-inline: auto;
+    padding: 96px clamp(72px, 11.8vw, 170px) 112px;
+  }
+  .arch__title {
+    font-size: 76px;
+  }
+  .steps {
+    flex-direction: row;
+    align-items: flex-start;
+    margin-top: 52px;
+  }
+  .step {
+    flex: 1 1 0;
+    padding: 0 12px;
+  }
+  /* La línea vertical entre actividades pasa a ser un filete entre columnas. */
+  .step + .step::before {
+    content: none;
+  }
+  .step + .step {
+    border-left: 1px solid color-mix(in srgb, var(--olive-deep) 45%, transparent);
+  }
+  .step__title {
+    font-size: clamp(34px, 3.4vw, 48px);
+  }
+  .step__time {
+    font-size: clamp(16px, 1.6vw, 23px);
+    white-space: nowrap;
+  }
+
+  /* ── Fotos a todo el ancho: la foto, sin recortar, sobre su propia versión difuminada ── */
+  .section.banner .section__inner {
+    max-width: none;
+  }
+  .banner__figure {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    background: #12110c;
+  }
+  .banner__figure::before {
+    content: '';
+    position: absolute;
+    inset: -60px;
+    background: var(--photo) center / cover no-repeat;
+    filter: blur(34px) brightness(0.7);
+  }
+  .banner__figure img {
+    position: relative;
+    width: auto;
+    max-width: 100%;
+  }
+  .banner__figure--tall img {
+    height: min(100svh, 940px);
+  }
+  .banner__figure--wide img {
+    width: min(100%, 1200px);
+    height: auto;
+  }
+
+  /* ── Ubicaciones: una junto a la otra, cada una con su foto de fondo ────── */
+  .places .section__inner {
+    max-width: none;
+    flex-direction: row;
+  }
+  .place {
+    flex: 1 1 0;
+    min-height: clamp(660px, 94svh, 920px);
+    padding: 72px 24px;
+  }
+  .place__card {
+    width: min(400px, 100%);
+  }
+  .place__body {
+    max-width: 290px;
+    padding: 58px 0 54px;
+  }
+  .place__label {
+    font-size: 21px;
+  }
+  .place__name {
+    font-size: 27px;
+  }
+  .place__time {
+    margin: 22px 0 32px;
+    font-size: 30px;
+  }
+
+  /* ── Dress code ─────────────────────────────────────────────────────────── */
+  .swatches {
+    gap: 16px;
+    margin-top: 36px;
+  }
+  .swatch {
+    width: 56px;
+    height: 56px;
+  }
+
+  /* ── Galería: cuatro columnas ───────────────────────────────────────────── */
+  #galeria .section__inner {
+    max-width: 1240px;
+  }
+  .gallery {
+    columns: 4;
+    column-gap: 18px;
+    margin-top: 48px;
+  }
+  .gallery__item {
+    margin-bottom: 18px;
+  }
+  .lightbox {
+    padding: 48px 110px;
+  }
+  .lightbox__img {
+    max-width: min(100%, 1000px);
+  }
+  .lightbox__nav--prev {
+    left: 24px;
+  }
+  .lightbox__nav--next {
+    right: 24px;
+  }
+
+  /* ── Confirmación ───────────────────────────────────────────────────────── */
+  .section.rsvp {
+    padding-top: 190px;
+    padding-bottom: 190px;
+  }
+
+  /* ── Deseos ─────────────────────────────────────────────────────────────── */
+  .gifts__title {
+    font-size: 68px;
+  }
+  .gifts__stage {
+    max-width: 660px;
+    margin: 72px auto 0;
+  }
+  .gifts__card {
+    padding: 48px 40px 52px;
+    font-size: 20px;
+  }
+  .gifts__message,
+  .gifts__small {
+    font-size: 17px;
+  }
+  .gifts__name {
+    font-size: 34px;
+  }
+  .gifts__block {
+    margin-top: 34px;
+  }
+
+  /* ── Cierre ─────────────────────────────────────────────────────────────── */
+  .closing {
+    padding-top: 130px;
+    padding-bottom: 124px;
+  }
+  .countdown {
+    margin-top: 52px;
+  }
+  .countdown__label {
+    font-size: 54px;
+  }
+  .countdown__list {
+    gap: 18px;
+    margin-top: 20px;
+  }
+  .countdown__unit {
+    width: 96px;
+    height: 96px;
+  }
+  .countdown__value {
+    font-size: 38px;
+  }
+  .countdown__name {
+    font-size: 13px;
+  }
+  .countdown__done {
+    font-size: 48px;
+  }
+  .closing__names {
+    margin-top: 60px;
+    font-size: 76px;
+  }
+  .credit {
+    font-size: 13px;
+  }
+
+  /* ── Apertura: sobre más grande ─────────────────────────────────────────── */
+  .env {
+    --w: min(56vw, 580px);
+  }
+  .env__title {
+    top: 14vh;
+    font-size: 62px;
+  }
+  .env__letter-tag {
+    font-size: calc(var(--w) * 0.034);
+  }
+  .env__letter-names {
+    font-size: calc(var(--w) * 0.1);
+  }
+  .env__hint {
+    top: calc(100% + 44px);
+    font-size: calc(var(--w) * 0.032);
+  }
+
+  /* ── Música ─────────────────────────────────────────────────────────────── */
+  .music {
+    padding-right: 28px;
+  }
+  .music__btn {
+    margin-top: 24px;
+  }
+}
